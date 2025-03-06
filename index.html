@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Feedback Form</h2>
+        <div class="buttons">
+            <button onclick="showForm('general')">General Feedback</button>
+            <button onclick="showForm('product')">Product Feedback</button>
+        </div>
+
+        <!-- General Feedback Form -->
+        <form id="generalForm" class="feedback-form" onsubmit="return validateForm('general')">
+            <h3>General Feedback</h3>
+            <label>Name:</label>
+            <input type="text" id="nameGeneral" required>
+            <label>Email:</label>
+            <input type="email" id="emailGeneral" required>
+            <label>Message:</label>
+            <textarea id="messageGeneral" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Product Feedback Form -->
+        <form id="productForm" class="feedback-form" onsubmit="return validateForm('product')" style="display: none;">
+            <h3>Product Feedback</h3>
+            <label>Product Name:</label>
+            <input type="text" id="productName" required>
+            <label>Email:</label>
+            <input type="email" id="emailProduct" required>
+            <label>Feedback:</label>
+            <textarea id="messageProduct" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+
+        <p id="successMessage" class="hidden">Thank you for your feedback!</p>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
