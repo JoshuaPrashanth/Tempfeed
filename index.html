@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Previous CSS remains the same, only removed thank-you page styles */
         * {
             margin: 0;
             padding: 0;
@@ -136,6 +135,17 @@
             color: #fbbf24;
             transform: scale(1.1);
         }
+
+        .validation-message {
+            color: #f87171;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .invalid {
+            border-color: #f87171 !important;
+        }
     </style>
 </head>
 <body>
@@ -150,17 +160,18 @@
                 </div>
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" required>
+                    <input type="email" id="emailInput" required>
+                    <div class="validation-message" id="emailValidation">Please enter a valid email address</div>
                 </div>
                 <div class="form-group">
                     <label>Feedback Category</label>
                     <select>
                         <option>Product Experience</option>
-                        <option>Customer Service</option>
+                        <option>Complaint</option>
                         <option>Suggestions</option>
                     </select>
                 </div>
-                <button type="button" onclick="switchPage('page2')">Continue <i class="fas fa-arrow-right"></i></button>
+                <button type="button" onclick="validateAndProceed()">Continue <i class="fas fa-arrow-right"></i></button>
             </form>
         </div>
 
@@ -216,8 +227,30 @@
 
         function handleSubmit(event) {
             event.preventDefault();
+            
+            // Reset entire website
+            document.getElementById('generalFeedback').reset();
+            document.getElementById('detailedFeedback').reset();
+            stars.forEach(star => star.classList.remove('active'));
+            currentRating = 0;
+            
             alert('Thank you for your feedback! We appreciate your input.');
             switchPage('page1');
+        }
+
+        function validateAndProceed() {
+            const emailInput = document.getElementById('emailInput');
+            const validationMessage = document.getElementById('emailValidation');
+            
+            if (!emailInput.checkValidity() || !emailInput.value.includes('@')) {
+                validationMessage.style.display = 'block';
+                emailInput.classList.add('invalid');
+                return;
+            }
+            
+            validationMessage.style.display = 'none';
+            emailInput.classList.remove('invalid');
+            switchPage('page2');
         }
 
         // Star Rating System
@@ -249,6 +282,12 @@
                 star.classList.toggle('active', index < currentRating);
             });
         }
+
+        // Email input validation
+        document.getElementById('emailInput').addEventListener('input', function() {
+            this.classList.remove('invalid');
+            document.getElementById('emailValidation').style.display = 'none';
+        });
     </script>
 </body>
 </html>
