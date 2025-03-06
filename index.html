@@ -3,46 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback Form</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Modern Feedback System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Previous CSS remains the same, only removed thank-you page styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .page {
+            background: #1e293b;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 500px;
+            position: absolute;
+            transform: translateX(100vw);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #334155;
+        }
+
+        .page.active {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .page.exit {
+            transform: translateX(-100vw);
+            opacity: 0;
+        }
+
+        h1 {
+            color: #f8fafc;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem;
+            background: #334155;
+            border: 2px solid #475569;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        button {
+            background: #38bdf8;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+            transform: translateY(-2px);
+        }
+
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
-
     <div class="container">
-        <h2>Feedback Form</h2>
-        <div class="buttons">
-            <button onclick="showForm('general')">General Feedback</button>
-            <button onclick="showForm('product')">Product Feedback</button>
+        <!-- Page 1 - General Feedback -->
+        <div class="page active" id="page1">
+            <h1>Share Your Feedback</h1>
+            <form id="generalFeedback">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Feedback Category</label>
+                    <select>
+                        <option>Product Experience</option>
+                        <option>Customer Service</option>
+                        <option>Suggestions</option>
+                    </select>
+                </div>
+                <button type="button" onclick="switchPage('page2')">Continue <i class="fas fa-arrow-right"></i></button>
+            </form>
         </div>
 
-        <!-- General Feedback Form -->
-        <form id="generalForm" class="feedback-form" onsubmit="return validateForm('general')">
-            <h3>General Feedback</h3>
-            <label>Name:</label>
-            <input type="text" id="nameGeneral" required>
-            <label>Email:</label>
-            <input type="email" id="emailGeneral" required>
-            <label>Message:</label>
-            <textarea id="messageGeneral" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-
-        <!-- Product Feedback Form -->
-        <form id="productForm" class="feedback-form" onsubmit="return validateForm('product')" style="display: none;">
-            <h3>Product Feedback</h3>
-            <label>Product Name:</label>
-            <input type="text" id="productName" required>
-            <label>Email:</label>
-            <input type="email" id="emailProduct" required>
-            <label>Feedback:</label>
-            <textarea id="messageProduct" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-
-        <p id="successMessage" class="hidden">Thank you for your feedback!</p>
+        <!-- Page 2 - Detailed Feedback -->
+        <div class="page" id="page2">
+            <h1>Detailed Feedback</h1>
+            <form id="detailedFeedback" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label>How would you rate your experience?</label>
+                    <div class="star-rating">
+                        <i class="fas fa-star star" data-rating="1"></i>
+                        <i class="fas fa-star star" data-rating="2"></i>
+                        <i class="fas fa-star star" data-rating="3"></i>
+                        <i class="fas fa-star star" data-rating="4"></i>
+                        <i class="fas fa-star star" data-rating="5"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>What did you like most?</label>
+                    <textarea rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>How can we improve?</label>
+                    <textarea rows="3"></textarea>
+                </div>
+                <div class="navigation">
+                    <button type="button" onclick="switchPage('page1')" style="background: #475569"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button type="submit">Submit Feedback</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function switchPage(targetPage) {
+            const currentPage = document.querySelector('.page.active');
+            const nextPage = document.getElementById(targetPage);
 
+            currentPage.classList.add('exit');
+            currentPage.classList.remove('active');
+            
+            setTimeout(() => {
+                nextPage.classList.add('active');
+                nextPage.classList.remove('exit');
+            }, 300);
+
+            if(targetPage === 'page1') {
+                document.getElementById('detailedFeedback').reset();
+                stars.forEach(star => star.classList.remove('active'));
+                currentRating = 0;
+            }
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your feedback! We appreciate your input.');
+            switchPage('page1');
+        }
+
+        // Star Rating System
+        const stars = document.querySelectorAll('.star');
+        let currentRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', setRating);
+            star.addEventListener('mouseover', addHover);
+            star.addEventListener('mouseout', removeHover);
+        });
+
+        function setRating(e) {
+            currentRating = parseInt(e.target.dataset.rating);
+            stars.forEach((star, index) => {
+                star.classList.toggle('active', index < currentRating);
+            });
+        }
+
+        function addHover(e) {
+            const hoverRating = parseInt(e.target.dataset.rating);
+            stars.forEach((star, index) => {
+                star.classList.toggle('active', index < hoverRating);
+            });
+        }
+
+        function removeHover() {
+            stars.forEach((star, index) => {
+                star.classList.toggle('active', index < currentRating);
+            });
+        }
+    </script>
 </body>
 </html>
